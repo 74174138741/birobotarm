@@ -1,0 +1,9 @@
+/build/
+*.o
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+libmujoco.so
+MUJOCO_LOG.TXT
+.idea/
