@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<library path="feixi_mujoco_hardware_plugin">
+  <class base_class_type="hardware_interface::SystemInterface"
+    name="feixi_ros2_control/FeixiMujocoHardware"
+    type="feixi_ros2_control::FeixiMujocoHardware">
+    <description>MuJoCo MJCF simulation for Feixi arm and gripper (ros2_control SystemInterface).</description>
+  </class>
+</library>

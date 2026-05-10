@@ -1,0 +1,8 @@
+1778299333.4154282 [INFO] [launch]: All log files can be found below /home/star/program/real/programming/grinding/ros2_launch_log/2026-05-09-12-02-13-414565-star-host-16251
+1778299333.4155498 [INFO] [launch]: Default logging verbosity is set to INFO
+1778299333.5207899 [ERROR] [launch]: Caught exception in launch (see debug for traceback): executed command failed. Command: xacro /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/urdf/feixi.urdf.xacro mjcf_model_path:=/home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/arm_with_gripper.xml command_interface:=effort
+Captured stderr output: error: name 'command_interface' is not defined 
+when evaluating expression 'command_interface == 'position''
+when instantiating macro: feixi_ros2_joint_block (/home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/urdf/feixi.urdf.xacro)
+in file: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/urdf/feixi.urdf.xacro
+

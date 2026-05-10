@@ -1,0 +1,23 @@
+[INFO] [1778294620.235575249] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[INFO] [1778294620.245263712] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[INFO] [1778294620.248454905] [controller_manager]: update rate is 250 Hz
+[INFO] [1778294620.248480872] [controller_manager]: Overruns handling is : enabled
+[INFO] [1778294620.248486560] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[WARN] [1778294620.248562354] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[INFO] [1778294620.256107129] [controller_manager]: Received robot description from topic.
+[INFO] [1778294620.256141051] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[INFO] [1778294620.257817165] [controller_manager]: Loading hardware 'FeixiArmMock' 
+[INFO] [1778294620.258877647] [controller_manager]: Loaded hardware 'FeixiArmMock' from plugin 'mock_components/GenericSystem'
+[INFO] [1778294620.258948848] [controller_manager]: Initialize hardware 'FeixiArmMock' 
+[INFO] [1778294620.262715882] [controller_manager]: Successful initialization of hardware 'FeixiArmMock'
+[INFO] [1778294620.262919976] [controller_manager]: Activating component 'FeixiArmMock'.
+[INFO] [1778294620.262933044] [resource_manager]: 'configure' hardware 'FeixiArmMock' 
+[INFO] [1778294620.262947064] [resource_manager]: Successful 'configure' of hardware 'FeixiArmMock'
+[INFO] [1778294620.262954695] [resource_manager]: 'activate' hardware 'FeixiArmMock' 
+[INFO] [1778294620.262962026] [resource_manager]: Successful 'activate' of hardware 'FeixiArmMock'
+[INFO] [1778294620.263023637] [controller_manager]: Registering statistics for : FeixiArmMock
+[INFO] [1778294620.263105290] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[WARN] [1778299245.122024217] [controller_manager]: Overrun detected! The controller manager missed its desired rate of 250 Hz. The loop took 33.212617 ms (missed cycles : 9).
+[WARN] [1778310045.041778290] [controller_manager]: Overrun detected! The controller manager missed its desired rate of 250 Hz. The loop took 36.966424 ms (missed cycles : 10).
+[WARN] [1778320845.240072522] [controller_manager]: Overrun detected! The controller manager missed its desired rate of 250 Hz. The loop took 35.259538 ms (missed cycles : 9).
+[WARN] [1778334397.806579885] [controller_manager]: Overrun detected! The controller manager missed its desired rate of 250 Hz. The loop took 5042.611604 ms (missed cycles : 1261).

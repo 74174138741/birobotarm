@@ -1,0 +1,3 @@
+[INFO] [1778294884.012946277] [spawner_feixi_trajectory_controller]: waiting for service /controller_manager/list_controllers to become available...
+[INFO] [1778294884.284205530] [spawner_feixi_trajectory_controller]: Loaded feixi_trajectory_controller
+[INFO] [1778294884.300614855] [spawner_feixi_trajectory_controller]: Configured and activated feixi_trajectory_controller

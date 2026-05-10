@@ -1,0 +1,52 @@
+[INFO] [1778294877.399939962] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[INFO] [1778294877.401540177] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[INFO] [1778294877.402642185] [controller_manager]: update rate is 250 Hz
+[INFO] [1778294877.402654873] [controller_manager]: Overruns handling is : enabled
+[INFO] [1778294877.402658814] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[WARN] [1778294877.402708019] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[INFO] [1778294877.584356098] [controller_manager]: Received robot description from topic.
+[INFO] [1778294877.584398622] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[INFO] [1778294877.585685505] [controller_manager]: Loading hardware 'FeixiMuJoCo' 
+[INFO] [1778294877.586697612] [controller_manager]: Loaded hardware 'FeixiMuJoCo' from plugin 'feixi_ros2_control/FeixiMujocoHardware'
+[INFO] [1778294877.586774399] [controller_manager]: Initialize hardware 'FeixiMuJoCo' 
+[INFO] [1778294877.628988948] [controller_manager.hardware_component.system.FeixiMuJoCo]: MuJoCo loaded: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/arm_with_gripper.xml
+
+[INFO] [1778294877.629045144] [controller_manager]: Successful initialization of hardware 'FeixiMuJoCo'
+[INFO] [1778294877.629155776] [controller_manager]: Activating component 'FeixiMuJoCo'.
+[INFO] [1778294877.629162029] [resource_manager]: 'configure' hardware 'FeixiMuJoCo' 
+[INFO] [1778294877.629164598] [resource_manager]: Successful 'configure' of hardware 'FeixiMuJoCo'
+[INFO] [1778294877.629169212] [resource_manager]: 'activate' hardware 'FeixiMuJoCo' 
+[INFO] [1778294877.629173528] [resource_manager]: Successful 'activate' of hardware 'FeixiMuJoCo'
+[INFO] [1778294877.629365095] [controller_manager]: Registering statistics for : FeixiMuJoCo
+[INFO] [1778294877.629400431] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[INFO] [1778294883.915035244] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
+[INFO] [1778294883.915123427] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[INFO] [1778294883.918974206] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /tmp/launch_params_0i1zw10a --params-file /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/ros2_controllers.yaml --params-file /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/feixi_joint_trajectory_controller.yaml 
+[INFO] [1778294883.929711084] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
+[INFO] [1778294883.929832064] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[INFO] [1778294883.939982723] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
+[INFO] [1778294883.943092843] [controller_manager]: Successfully switched controllers!
+[INFO] [1778294884.265482517] [controller_manager]: Loading controller : 'feixi_trajectory_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[INFO] [1778294884.265547522] [controller_manager]: Loading controller 'feixi_trajectory_controller'
+[INFO] [1778294884.268961435] [controller_manager]: Controller 'feixi_trajectory_controller' node arguments: --ros-args --params-file /tmp/launch_params_0i1zw10a --params-file /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/ros2_controllers.yaml --params-file /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/feixi_joint_trajectory_controller.yaml 
+[INFO] [1778294884.284799453] [controller_manager]: Configuring controller: 'feixi_trajectory_controller'
+[INFO] [1778294884.284978635] [feixi_trajectory_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[INFO] [1778294884.284996299] [feixi_trajectory_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[INFO] [1778294884.285014559] [feixi_trajectory_controller]: Using 'splines' interpolation method.
+[INFO] [1778294884.286442554] [feixi_trajectory_controller]: Action status changes will be monitored at 20.00 Hz.
+[INFO] [1778294884.289183539] [feixi_trajectory_controller]: Setting initial scaling factor to 1.000000
+[INFO] [1778294884.289206653] [feixi_trajectory_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[INFO] [1778294884.291880983] [controller_manager]: Activating controllers: [ feixi_trajectory_controller ]
+[INFO] [1778294884.295294670] [controller_manager]: Successfully switched controllers!
+[INFO] [1778294899.058767704] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [1778294899.058865559] [controller_manager]: Shutdown request received....
+[INFO] [1778294899.058938500] [controller_manager]: Shutting down all controllers in the controller manager.
+[INFO] [1778294899.058985461] [controller_manager]: Deactivating controller 'feixi_trajectory_controller'
+[INFO] [1778294899.059091564] [controller_manager]: Shutting down controller 'feixi_trajectory_controller'
+[INFO] [1778294899.059450484] [controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[INFO] [1778294899.059526979] [controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[INFO] [1778294899.059624851] [resource_manager]: 'deactivate' hardware 'FeixiMuJoCo' 
+[INFO] [1778294899.059658171] [resource_manager]: Successful 'deactivate' of hardware 'FeixiMuJoCo'
+[INFO] [1778294899.059675523] [resource_manager]: 'shutdown' hardware 'FeixiMuJoCo' 
+[INFO] [1778294899.059685015] [resource_manager]: Successful 'shutdown' of hardware 'FeixiMuJoCo'
+[INFO] [1778294899.059741646] [controller_manager]: Shutting down the controller manager.

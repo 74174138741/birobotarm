@@ -50,8 +50,6 @@ rm -rf build
 cmake -S . -B build -DMUJOCO_ROOT="$MUJOCO_DIR"
 cmake --build build -j"$(nproc)"
 
-echo "[7/7] 运行测试..."
-./build/mj_demo --headless
-./build/mj_demo1 --headless
+echo "[7/7] 构建完成：在项目根目录运行 $PROJECT_DIR/./build/mj_demo"
 
 echo "全部完成。"

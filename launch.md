@@ -1,37 +1,98 @@
-# 使用说明
+# 编译与运行
 
-## 环境
-
-```bash
-export MUJOCO_DIR=~/mujoco   # 按实际安装路径修改
-export LD_LIBRARY_PATH="$MUJOCO_DIR/lib:${LD_LIBRARY_PATH:-}"
-```
-
-## 依赖
+## 非 ROS（顶层 CMake）
 
 ```bash
-sudo apt install -y libglfw3-dev
+#这里可以对单mujoco环境进行测试
+cmake -S . -B build && cmake --build build -j
+./build/mj_demo
 ```
 
-## 编译
+---
+
+
+
+### 编译
+
+**在仓库根目录 `grinding/`（不必 `cd ros2_build_ws`）：**
 
 ```bash
-cmake -S . -B build -DMUJOCO_ROOT="${MUJOCO_DIR:-$HOME/mujoco}"
-cmake --build build -j"$(nproc)"
+source /opt/ros/jazzy/setup.bash
+export MUJOCO_DIR="${MUJOCO_DIR:-$HOME/mujoco}"
+
+colcon --log-base ros2_build_ws/log build \
+  --base-paths ros2_build_ws/src \
+  --build-base ros2_build_ws/build \
+  --install-base ros2_build_ws/install \
+  --packages-select feixi_ros2_control
+
+source ./ros2_build_ws/install/setup.bash
 ```
 
-## 运行
+`--packages-select` 只能写**包名** `feixi_ros2_control`，不能写路径。
 
-从项目根目录执行（可执行文件旁已复制 `feixi/` 模型与 `collision` 占位网格）：
+
+### 查看 launch 全部参数
 
 ```bash
-./build/mj_demo1
+
+source ./ros2_build_ws/install/setup.bash
+
+ros2 launch feixi_ros2_control feixi_mujoco_ros2_control.launch.py --show-args
 ```
 
-若存在 `src/main.cpp`，会同时生成 `./build/mj_demo`。
 
-## 官方仿真器（可选）
+ `mjcf_model_path` 这里可以切选用的mujoco场景  `scenes/arm_with_gripper.xml`
+
+ `control_mode`
+      `position` 
+      `effort`：
+
+ `joint_commands` 
+    `trajectory`：JointTrajectoryController；
+    `stream`：ForwardCommandController（需发 `Float64MultiArray`） 
+
+
+`init_pose_q` 
+    `0,-0.5,0,1.2,0,0.8,0,0.05`
+
+`init_lock_writes` 
+     `500` | 启动阶段若干 write 内先做初始位姿锁定（0 则只做一次 seed）
+
+
+`mujoco_joint_actuation` 
+     `pd_torque` 电机 PD；
+     `direct` 每拍运动学对齐关节角（几乎不抖，臂端接触/力不真实） 
+
+`enable_mujoco_viewer` 
+    `false` 
+    `true` 打开 MuJoCo GLFW 窗口 
+`viewer_width` 
+`viewer_height` 
+    `960` / `720`
+`run_test` 
+    `false` 
+    `true`
+
+
 
 ```bash
-"$MUJOCO_DIR/bin/simulate" models/feixi/feixi_model.xml
+ros2 launch feixi_ros2_control feixi_mujoco_ros2_control.launch.py enable_mujoco_viewer:=true mujoco_joint_actuation:=direct
+joint_commands:=stream 
+run_test:=true
+mujoco_joint_actuation:=direct
+control_mode:=effort
 ```
+
+
+
+### 另开终端：手动发送指令
+
+```bash
+ros2 run feixi_ros2_control send_feixi_demo_trajectory
+ros2 run feixi_ros2_control stream_feixi_joint_commands
+```
+
+`stream_feixi_joint_commands` 需在 launch 里使用 `joint_commands:=stream`，默认 topic：`/feixi_forward_position_controller/commands`。
+
+

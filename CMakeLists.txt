@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(MUJOCO_ROOT "$ENV{MUJOCO_DIR}" CACHE PATH "Path to MuJoCo 3.x")
 
 if(NOT MUJOCO_ROOT)
-  set(MUJOCO_ROOT "$ENV{HOME}/mujoco")
+  set(MUJOCO_ROOT "$ENV{HOME}/mjoco")
 endif()
 
 set(MUJOCO_INCLUDE_DIR "${MUJOCO_ROOT}/include")
@@ -33,51 +33,29 @@ else()
   find_library(_MJ_GLFW NAMES glfw glfw3 REQUIRED)
 endif()
 
-# ========================
-# 公共函数（关键优化）
-# ========================
-function(add_mujoco_exe target src)
-  add_executable(${target} ${src})
-
+function(mujoco_target_link target)
   target_include_directories(${target} PRIVATE ${MUJOCO_INCLUDE_DIR})
-
   target_link_libraries(${target}
-    PRIVATE
-    ${MUJOCO_LIBRARY}
-    OpenGL::GL
-    ${_MJ_GLFW}
-  )
+    PRIVATE ${MUJOCO_LIBRARY} OpenGL::GL ${_MJ_GLFW})
+endfunction()
 
-  # 拷贝资源
+# 拷贝到可执行文件旁：scenes/ 内含 models/（与仓库 scenes/ 目录布局一致）
+function(mujoco_runtime_assets_postbuild target)
   add_custom_command(TARGET ${target} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
       "${MUJOCO_LIBRARY}"
       "$<TARGET_FILE_DIR:${target}>/libmujoco.so"
 
-    COMMAND ${CMAKE_COMMAND} -E make_directory
-      "$<TARGET_FILE_DIR:${target}>/feixi"
-
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "${CMAKE_CURRENT_SOURCE_DIR}/models/feixi/feixi_model.xml"
-      "$<TARGET_FILE_DIR:${target}>/feixi/feixi_model.xml"
-
+    COMMAND ${CMAKE_COMMAND} -E rm -rf "$<TARGET_FILE_DIR:${target}>/scenes"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-      "${CMAKE_CURRENT_SOURCE_DIR}/models/feixi/visual"
-      "$<TARGET_FILE_DIR:${target}>/feixi/visual"
-
-    # MJCF references collision/*.obj but repo only ships visual/; reuse meshes for load + run.
-    COMMAND ${CMAKE_COMMAND} -E make_directory
-      "$<TARGET_FILE_DIR:${target}>/feixi/collision"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-      "${CMAKE_CURRENT_SOURCE_DIR}/models/feixi/visual"
-      "$<TARGET_FILE_DIR:${target}>/feixi/collision"
+      "${CMAKE_CURRENT_SOURCE_DIR}/scenes"
+      "$<TARGET_FILE_DIR:${target}>/scenes"
   )
 endfunction()
 
 # ========================
 # 可执行文件
 # ========================
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
-  add_mujoco_exe(mj_demo src/main.cpp)
-endif()
-add_mujoco_exe(mj_demo1 src/main1.cpp)
+add_executable(mj_demo src/main.cpp src/mj_view.cpp)
+mujoco_target_link(mj_demo)
+mujoco_runtime_assets_postbuild(mj_demo)

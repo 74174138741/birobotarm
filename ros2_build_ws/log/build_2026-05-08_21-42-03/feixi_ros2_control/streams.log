@@ -1,0 +1,132 @@
+[0.010s] Invoking command in '/home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/star/program/real/programming/grinding/ros2_build_ws/src/feixi_ros2_control -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control
+[0.180s] -- The C compiler identification is GNU 13.3.0
+[0.254s] -- The CXX compiler identification is GNU 13.3.0
+[0.277s] -- Detecting C compiler ABI info
+[0.405s] -- Detecting C compiler ABI info - done
+[0.420s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.421s] -- Detecting C compile features
+[0.422s] -- Detecting C compile features - done
+[0.434s] -- Detecting CXX compiler ABI info
+[0.577s] -- Detecting CXX compiler ABI info - done
+[0.583s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.583s] -- Detecting CXX compile features
+[0.584s] -- Detecting CXX compile features - done
+[0.589s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.706s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[0.804s] -- Found hardware_interface: 4.44.0 (/opt/ros/jazzy/share/hardware_interface/cmake)
+[0.841s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.850s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.863s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.876s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.050s] -- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+[1.085s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[1.087s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[1.105s] -- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+[1.155s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[1.157s] -- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+[1.169s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[1.172s] -- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+[1.179s] -- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+[1.188s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.466s] -- Configuring done (1.4s)
+[1.489s] -- Generating done (0.0s)
+[1.493s] -- Build files have been written to: /home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control
+[1.502s] Invoked command in '/home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/star/program/real/programming/grinding/ros2_build_ws/src/feixi_ros2_control -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control
+[1.503s] Invoking command in '/home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control -- -j20 -l20
+[1.571s] [ 50%] Building CXX object CMakeFiles/feixi_mujoco_hardware_plugin.dir/src/feixi_mujoco_hardware.cpp.o
+[4.726s] [100%] Linking CXX shared library libfeixi_mujoco_hardware_plugin.so
+[4.936s] [100%] Built target feixi_mujoco_hardware_plugin
+[4.942s] Invoked command in '/home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control -- -j20 -l20
+[4.950s] Invoking command in '/home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control
+[4.957s] -- Install configuration: "Release"
+[4.958s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/feixi_mujoco_hardware.xml
+[4.958s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/include
+[4.958s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/include/feixi_ros2_control
+[4.958s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/include/feixi_ros2_control/feixi_mujoco_hardware.hpp
+[4.959s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/lib/libfeixi_mujoco_hardware_plugin.so
+[4.959s] -- Set non-toolchain portion of runtime path of "/home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/lib/libfeixi_mujoco_hardware_plugin.so" to ""
+[4.959s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/urdf
+[4.959s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/urdf/feixi_mock.urdf.xacro
+[4.959s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/urdf/feixi.urdf.xacro
+[4.959s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/launch
+[4.959s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/launch/feixi_mujoco_ros2_control.launch.py
+[4.959s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/launch/feixi_mock_ros2_control.launch.py
+[4.959s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config
+[4.959s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/feixi_joint_trajectory_arm7_mock.yaml
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/feixi_joint_trajectory_controller.yaml
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/ros2_controllers.yaml
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/feixi_with_gripper.xml
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link6.stl
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link1.stl
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link7.stl
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link4.stl
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link3.stl
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link2.stl
+[4.960s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link5.stl
+[4.961s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link0.stl
+[4.961s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual
+[4.961s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link2.obj
+[4.961s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link5.mtl
+[4.961s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link1.obj
+[4.961s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link0.obj
+[4.961s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link3.mtl
+[4.961s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/ring.mtl
+[4.961s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link5.obj
+[4.961s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link4.obj
+[4.962s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link2.mtl
+[4.962s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link7.obj
+[4.962s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/ring.obj
+[4.962s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link4.mtl
+[4.962s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link7.mtl
+[4.962s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link3.obj
+[4.962s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link6.obj
+[4.963s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link1.mtl
+[4.963s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link0.mtl
+[4.963s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/visual/link6.mtl
+[4.963s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/feixi_model.xml
+[4.963s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand
+[4.963s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/hand.xml
+[4.963s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/collision
+[4.963s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/collision/right_inner_knuckle.stl
+[4.963s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/collision/right_outer_knuckle.stl
+[4.963s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/collision/right_finger.stl
+[4.964s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/collision/left_outer_knuckle.stl
+[4.964s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/collision/left_finger.stl
+[4.964s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/collision/left_inner_knuckle.stl
+[4.964s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/collision/base_link.stl
+[4.965s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/visual
+[4.965s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/visual/right_inner_knuckle.stl
+[4.965s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/visual/right_outer_knuckle.stl
+[4.965s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/visual/right_finger.stl
+[4.965s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/visual/left_outer_knuckle.stl
+[4.965s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/visual/left_finger.stl
+[4.965s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/visual/left_inner_knuckle.stl
+[4.966s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/hand/visual/base_link.stl
+[4.966s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/arm_with_gripper.xml
+[4.966s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/arm_only.xml
+[4.966s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/environment/library_path.sh
+[4.966s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/environment/library_path.dsv
+[4.966s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/ament_index/resource_index/package_run_dependencies/feixi_ros2_control
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/ament_index/resource_index/parent_prefix_path/feixi_ros2_control
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/environment/ament_prefix_path.sh
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/environment/ament_prefix_path.dsv
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/environment/path.sh
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/environment/path.dsv
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/local_setup.bash
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/local_setup.sh
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/local_setup.zsh
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/local_setup.dsv
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/package.dsv
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/ament_index/resource_index/packages/feixi_ros2_control
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/ament_index/resource_index/hardware_interface__pluginlib__plugin/feixi_ros2_control
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/cmake/ament_cmake_export_include_directories-extras.cmake
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/cmake/ament_cmake_export_dependencies-extras.cmake
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/cmake/ament_cmake_export_libraries-extras.cmake
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/cmake/feixi_ros2_controlConfig.cmake
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/cmake/feixi_ros2_controlConfig-version.cmake
+[4.967s] -- Installing: /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/package.xml
+[4.968s] Invoked command in '/home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/star/program/real/programming/grinding/ros2_build_ws/build/feixi_ros2_control

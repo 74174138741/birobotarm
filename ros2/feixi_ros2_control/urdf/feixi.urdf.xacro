@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="feixi_arm">
+  <xacro:arg name="mjcf_model_path" default=""/>
+  <!-- position: 插件内 PD，指令为关节位置；effort: 插件只做力矩映射，PD 由 JointTrajectoryController(gains) 承担 -->
+  <xacro:arg name="command_interface" default="position"/>
+  <xacro:arg name="enable_mujoco_viewer" default="false"/>
+  <xacro:arg name="viewer_width" default="960"/>
+  <xacro:arg name="viewer_height" default="720"/>
+  <!-- MuJoCo seed pose (rad): joint1..7, gripper_finger_joint; init_lock_writes = write-cycle kinematic holds -->
+  <xacro:arg name="init_pose_q" default="0,-0.5,0,1.2,0,0.8,0,0.05"/>
+  <xacro:arg name="init_lock_writes" default="500"/>
+  <!-- MuJoCo realtime: pd_torque = motor torques from PD on q_des; direct = kinematic joint angles after mj_step (ideal tracking, not physical contact on arm). -->
+  <xacro:arg name="mujoco_joint_actuation" default="pd_torque"/>
+
+  <xacro:macro name="feixi_ros2_joint_block" params="joint_name cmd_iface">
+    <joint name="${joint_name}">
+      <xacro:if value="${cmd_iface == 'position'}">
+        <command_interface name="position"/>
+      </xacro:if>
+      <xacro:if value="${cmd_iface == 'effort'}">
+        <command_interface name="effort"/>
+      </xacro:if>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- 骨架：robot_state_publisher；MuJoCo 物理仍为 MJCF，由硬件插件载入 -->
+  <link name="world"/>
+  <link name="base_link"/>
+  <link name="link1"/>
+  <link name="link2"/>
+  <link name="link3"/>
+  <link name="link4"/>
+  <link name="link5"/>
+  <link name="link6"/>
+  <link name="link7"/>
+  <!-- 仅占位链路；真实开合由 MuJoCo left_driver_joint 反映 -->
+  <link name="gripper_logical_link"/>
+
+  <joint name="world_joint" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="0 0 0.21" rpy="0 0 -3.141592653589793"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="261" velocity="3.14" lower="-2.8798" upper="2.8798"/>
+  </joint>
+
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0 0.0675 0.24" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="261" velocity="3.14" lower="-2.7576" upper="2.7576"/>
+  </joint>
+
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin xyz="0 0.0625 0.2275" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="123" velocity="3.14" lower="-2.8798" upper="2.8798"/>
+  </joint>
+
+  <joint name="joint4" type="revolute">
+    <parent link="link3"/>
+    <child link="link4"/>
+    <origin xyz="0 -0.0625 0.2225" rpy="0 0 -3.141592653589793"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="123" velocity="3.14" lower="-2.7925" upper="2.7925"/>
+  </joint>
+
+  <joint name="joint5" type="revolute">
+    <parent link="link4"/>
+    <child link="link5"/>
+    <origin xyz="0 0.0575 0.205" rpy="0 0 -3.141592653589793"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="57" velocity="3.14" lower="-3.0543" upper="3.0543"/>
+  </joint>
+
+  <joint name="joint6" type="revolute">
+    <parent link="link5"/>
+    <child link="link6"/>
+    <origin xyz="0 0.03 0.19" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="57" velocity="3.14" lower="-1.4835" upper="4.6251"/>
+  </joint>
+
+  <joint name="joint7" type="revolute">
+    <parent link="link6"/>
+    <child link="link7"/>
+    <origin xyz="-0.015 0.073 0.11" rpy="0 -1.5707963478683205 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="57" velocity="3.14" lower="-3.0543" upper="3.0543"/>
+  </joint>
+
+  <joint name="gripper_finger_joint" type="revolute">
+    <parent link="link7"/>
+    <child link="gripper_logical_link"/>
+    <origin xyz="0 0 0.077" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="50" velocity="2.0" lower="0" upper="0.85"/>
+  </joint>
+
+  <ros2_control name="FeixiMuJoCo" type="system">
+    <hardware>
+      <plugin>feixi_ros2_control/FeixiMujocoHardware</plugin>
+      <param name="mjcf_model_path">$(arg mjcf_model_path)</param>
+      <param name="arm_kp">1200</param>
+      <param name="arm_kd">90</param>
+      <param name="gripper_ctrl_kp">380</param>
+      <param name="command_interface">$(arg command_interface)</param>
+      <param name="mujoco_joint_actuation">$(arg mujoco_joint_actuation)</param>
+      <param name="init_pose_q">$(arg init_pose_q)</param>
+      <param name="init_lock_writes">$(arg init_lock_writes)</param>
+      <param name="enable_mujoco_viewer">$(arg enable_mujoco_viewer)</param>
+      <param name="viewer_width">$(arg viewer_width)</param>
+      <param name="viewer_height">$(arg viewer_height)</param>
+    </hardware>
+    <xacro:feixi_ros2_joint_block joint_name="joint1" cmd_iface="$(arg command_interface)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint2" cmd_iface="$(arg command_interface)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint3" cmd_iface="$(arg command_interface)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint4" cmd_iface="$(arg command_interface)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint5" cmd_iface="$(arg command_interface)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint6" cmd_iface="$(arg command_interface)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint7" cmd_iface="$(arg command_interface)"/>
+    <xacro:feixi_ros2_joint_block joint_name="gripper_finger_joint" cmd_iface="$(arg command_interface)"/>
+  </ros2_control>
+</robot>

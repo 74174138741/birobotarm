@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="feixi_arm_mock">
+  <!-- GenericSystem mock：无 MuJoCo，仅离线验证控制器 / TF -->
+
+  <link name="world"/>
+  <link name="base_link"/>
+  <link name="link1"/>
+  <link name="link2"/>
+  <link name="link3"/>
+  <link name="link4"/>
+  <link name="link5"/>
+  <link name="link6"/>
+  <link name="link7"/>
+
+  <joint name="world_joint" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="0 0 0.21" rpy="0 0 -3.141592653589793"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="261" velocity="3.14" lower="-2.8798" upper="2.8798"/>
+  </joint>
+
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0 0.0675 0.24" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="261" velocity="3.14" lower="-2.7576" upper="2.7576"/>
+  </joint>
+
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin xyz="0 0.0625 0.2275" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="123" velocity="3.14" lower="-2.8798" upper="2.8798"/>
+  </joint>
+
+  <joint name="joint4" type="revolute">
+    <parent link="link3"/>
+    <child link="link4"/>
+    <origin xyz="0 -0.0625 0.2225" rpy="0 0 -3.141592653589793"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="123" velocity="3.14" lower="-2.7925" upper="2.7925"/>
+  </joint>
+
+  <joint name="joint5" type="revolute">
+    <parent link="link4"/>
+    <child link="link5"/>
+    <origin xyz="0 0.0575 0.205" rpy="0 0 -3.141592653589793"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="57" velocity="3.14" lower="-3.0543" upper="3.0543"/>
+  </joint>
+
+  <joint name="joint6" type="revolute">
+    <parent link="link5"/>
+    <child link="link6"/>
+    <origin xyz="0 0.03 0.19" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="57" velocity="3.14" lower="-1.4835" upper="4.6251"/>
+  </joint>
+
+  <joint name="joint7" type="revolute">
+    <parent link="link6"/>
+    <child link="link7"/>
+    <origin xyz="-0.015 0.073 0.11" rpy="0 -1.5707963478683205 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="57" velocity="3.14" lower="-3.0543" upper="3.0543"/>
+  </joint>
+
+  <ros2_control name="FeixiArmMock" type="system">
+    <hardware>
+      <plugin>mock_components/GenericSystem</plugin>
+      <param name="fake_sensor_commands">false</param>
+      <param name="calculate_dynamics">false</param>
+    </hardware>
+    <joint name="joint1">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint2">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint3">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint4">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint5">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint6">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint7">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+</robot>

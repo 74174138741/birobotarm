@@ -1,0 +1,50 @@
+[INFO] [1778294859.335424015] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[INFO] [1778294859.336913942] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[INFO] [1778294859.337857990] [controller_manager]: update rate is 250 Hz
+[INFO] [1778294859.337868465] [controller_manager]: Overruns handling is : enabled
+[INFO] [1778294859.337871216] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[WARN] [1778294859.337906252] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[INFO] [1778294859.519989805] [controller_manager]: Received robot description from topic.
+[INFO] [1778294859.520043721] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[INFO] [1778294859.522256801] [controller_manager]: Loading hardware 'FeixiArmMock' 
+[INFO] [1778294859.522657477] [controller_manager]: Loaded hardware 'FeixiArmMock' from plugin 'mock_components/GenericSystem'
+[INFO] [1778294859.522710014] [controller_manager]: Initialize hardware 'FeixiArmMock' 
+[INFO] [1778294859.525399632] [controller_manager]: Successful initialization of hardware 'FeixiArmMock'
+[INFO] [1778294859.525531974] [controller_manager]: Activating component 'FeixiArmMock'.
+[INFO] [1778294859.525539958] [resource_manager]: 'configure' hardware 'FeixiArmMock' 
+[INFO] [1778294859.525550309] [resource_manager]: Successful 'configure' of hardware 'FeixiArmMock'
+[INFO] [1778294859.525554532] [resource_manager]: 'activate' hardware 'FeixiArmMock' 
+[INFO] [1778294859.525559994] [resource_manager]: Successful 'activate' of hardware 'FeixiArmMock'
+[INFO] [1778294859.525608970] [controller_manager]: Registering statistics for : FeixiArmMock
+[INFO] [1778294859.525663546] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[INFO] [1778294862.834863257] [controller_manager]: Loading controller : 'feixi_trajectory_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[INFO] [1778294862.834951990] [controller_manager]: Loading controller 'feixi_trajectory_controller'
+[INFO] [1778294862.840606592] [controller_manager]: Controller 'feixi_trajectory_controller' node arguments: --ros-args --params-file /tmp/launch_params_e4b4oo8a --params-file /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/ros2_controllers.yaml --params-file /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/feixi_joint_trajectory_arm7_mock.yaml 
+[INFO] [1778294862.856141968] [controller_manager]: Configuring controller: 'feixi_trajectory_controller'
+[INFO] [1778294862.856700398] [feixi_trajectory_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[INFO] [1778294862.856764624] [feixi_trajectory_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[INFO] [1778294862.856824360] [feixi_trajectory_controller]: Using 'splines' interpolation method.
+[INFO] [1778294862.865714050] [feixi_trajectory_controller]: Action status changes will be monitored at 20.00 Hz.
+[INFO] [1778294862.869136181] [feixi_trajectory_controller]: Setting initial scaling factor to 1.000000
+[INFO] [1778294862.869160587] [feixi_trajectory_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[INFO] [1778294862.872337248] [controller_manager]: Activating controllers: [ feixi_trajectory_controller ]
+[INFO] [1778294862.874472840] [controller_manager]: Successfully switched controllers!
+[INFO] [1778294863.192224057] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
+[INFO] [1778294863.192313571] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[INFO] [1778294863.195384993] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /tmp/launch_params_e4b4oo8a --params-file /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/ros2_controllers.yaml --params-file /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/feixi_joint_trajectory_arm7_mock.yaml 
+[INFO] [1778294863.209616511] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
+[INFO] [1778294863.209716400] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[INFO] [1778294863.217025356] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
+[INFO] [1778294863.218407523] [controller_manager]: Successfully switched controllers!
+[INFO] [1778294877.046038900] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [1778294877.046117641] [controller_manager]: Shutdown request received....
+[INFO] [1778294877.046151659] [controller_manager]: Shutting down all controllers in the controller manager.
+[INFO] [1778294877.046175320] [controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[INFO] [1778294877.046221500] [controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[INFO] [1778294877.046348497] [controller_manager]: Deactivating controller 'feixi_trajectory_controller'
+[INFO] [1778294877.046380777] [controller_manager]: Shutting down controller 'feixi_trajectory_controller'
+[INFO] [1778294877.046451896] [resource_manager]: 'deactivate' hardware 'FeixiArmMock' 
+[INFO] [1778294877.046480530] [resource_manager]: Successful 'deactivate' of hardware 'FeixiArmMock'
+[INFO] [1778294877.046485421] [resource_manager]: 'shutdown' hardware 'FeixiArmMock' 
+[INFO] [1778294877.046489349] [resource_manager]: Successful 'shutdown' of hardware 'FeixiArmMock'
+[INFO] [1778294877.046519568] [controller_manager]: Shutting down the controller manager.

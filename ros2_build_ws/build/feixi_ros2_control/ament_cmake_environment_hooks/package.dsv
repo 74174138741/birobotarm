@@ -1,0 +1,4 @@
+source;share/feixi_ros2_control/local_setup.bash
+source;share/feixi_ros2_control/local_setup.dsv
+source;share/feixi_ros2_control/local_setup.sh
+source;share/feixi_ros2_control/local_setup.zsh
