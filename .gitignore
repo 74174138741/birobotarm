@@ -1,9 +1,27 @@
+# Native MuJoCo test build
+/test/build/
+/native_build/
+
+# colcon workspace artifacts (repo root is the workspace)
 /build/
+/install/
+/log/
+
+# CMake / compiler
 *.o
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 Makefile
 libmujoco.so
+
+# Runtime logs
 MUJOCO_LOG.TXT
+ros2_launch_log/
+
+# IDE
 .idea/
+
+# Python
+__pycache__/
+*.pyc

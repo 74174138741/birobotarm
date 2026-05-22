@@ -1,8 +1,0 @@
-1778294767.4359856 [INFO] [launch]: All log files can be found below /home/star/program/real/programming/grinding/ros2_launch_log/2026-05-09-10-46-07-435275-star-host-12124
-1778294767.4360809 [INFO] [launch]: Default logging verbosity is set to INFO
-1778294767.5631590 [INFO] [robot_state_publisher-1]: process started with pid [12129]
-1778294767.5632620 [INFO] [ros2_control_node-2]: process started with pid [12130]
-1778294773.5667472 [INFO] [spawner-3]: process started with pid [12436]
-1778294773.5668588 [INFO] [spawner-4]: process started with pid [12437]
-1778294774.2802451 [INFO] [spawner-4]: process has finished cleanly [pid 12437]
-1778294774.6302927 [INFO] [spawner-3]: process has finished cleanly [pid 12436]

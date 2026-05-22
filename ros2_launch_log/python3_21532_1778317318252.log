@@ -1,3 +1,0 @@
-[INFO] [1778317318.705323347] [spawner_joint_state_broadcaster]: waiting for service /controller_manager/list_controllers to become available...
-[INFO] [1778317318.976581199] [spawner_joint_state_broadcaster]: Loaded joint_state_broadcaster
-[INFO] [1778317318.996612429] [spawner_joint_state_broadcaster]: Configured and activated joint_state_broadcaster

@@ -1,8 +1,0 @@
-1778294620.0256197 [INFO] [launch]: All log files can be found below /home/star/program/real/programming/grinding/ros2_launch_log/2026-05-09-10-43-40-024863-star-host-6261
-1778294620.0257256 [INFO] [launch]: Default logging verbosity is set to INFO
-1778294620.1572211 [INFO] [robot_state_publisher-1]: process started with pid [6267]
-1778294620.1573415 [INFO] [ros2_control_node-2]: process started with pid [6268]
-1778294623.1707647 [INFO] [spawner-3]: process started with pid [6341]
-1778294623.1709166 [INFO] [spawner-4]: process started with pid [6342]
-1778294627.1744158 [ERROR] [spawner-4]: process has died [pid 6342, exit code 1, cmd '/opt/ros/jazzy/lib/controller_manager/spawner feixi_trajectory_controller --controller-manager-timeout 60 --ros-args'].
-1778294627.1749220 [ERROR] [spawner-3]: process has died [pid 6341, exit code 1, cmd '/opt/ros/jazzy/lib/controller_manager/spawner joint_state_broadcaster --controller-manager-timeout 60 --ros-args'].

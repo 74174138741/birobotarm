@@ -1,98 +1,118 @@
 # 编译与运行
 
-## 非 ROS（顶层 CMake）
+**环境**：`~/.bashrc` 中已配置 `MUJOCO_DIR`、`LD_LIBRARY_PATH` 与 `source /opt/ros/jazzy/setup.bash`，新开终端即可用。若未配置，请先写入后再继续。
 
+配置方法为
 ```bash
-#这里可以对单mujoco环境进行测试
-cmake -S . -B build && cmake --build build -j
-./build/mj_demo
+MUJOCO_DIR="${MUJOCO_DIR:-$HOME/mujoco}"
+export LD_LIBRARY_PATH="${MUJOCO_DIR}/lib:${LD_LIBRARY_PATH:-}"
+source /opt/ros/jazzy/setup.bash
 ```
 
 ---
 
+## 非 ROS（MuJoCo 简单测试）
 
+```bash
+cmake -S test -B test/build && cmake --build test/build -j
+./test/build/mj_demo
+```
+
+改动了源码或场景后需重新构建；未改动时直接运行 `./test/build/mj_demo`。
+
+---
+
+## ROS 2
 
 ### 编译
 
-**在仓库根目录 `grinding/`（不必 `cd ros2_build_ws`）：**
+在仓库根目录 `grinding/`：
 
 ```bash
-source /opt/ros/jazzy/setup.bash
-export MUJOCO_DIR="${MUJOCO_DIR:-$HOME/mujoco}"
+export ROS_LOG_DIR="${ROS_LOG_DIR:-$PWD/log/launch}"   # 可选，launch 日志目录
 
-colcon --log-base ros2_build_ws/log build \
-  --base-paths ros2_build_ws/src \
-  --build-base ros2_build_ws/build \
-  --install-base ros2_build_ws/install \
-  --packages-select feixi_ros2_control
-
-source ./ros2_build_ws/install/setup.bash
+colcon build --packages-select feixi_mujoco_control feixi_trajectory
+source install/setup.bash
 ```
 
-`--packages-select` 只能写**包名** `feixi_ros2_control`，不能写路径。
-
-
-### 查看 launch 全部参数
+### 运行仿真
 
 ```bash
-
-source ./ros2_build_ws/install/setup.bash
-
-ros2 launch feixi_ros2_control feixi_mujoco_ros2_control.launch.py --show-args
+source install/setup.bash
+ros2 launch feixi_mujoco_control feixi_mujoco_ros2_control.launch.py
 ```
 
+查看全部参数：`--show-args`
 
- `mjcf_model_path` 这里可以切选用的mujoco场景  `scenes/arm_with_gripper.xml`
+### Launch 参数与默认值
 
- `control_mode`
-      `position` 
-      `effort`：
+1. **`mjcf_model_path`**（默认 `scenes/arm_with_gripper.xml`）  
+   MuJoCo 场景；相对路径解析到 `share/feixi_mujoco_control/` 下。
 
- `joint_commands` 
-    `trajectory`：JointTrajectoryController；
-    `stream`：ForwardCommandController（需发 `Float64MultiArray`） 
+2. **`control_mode`**（默认 `effort`）  
+   `position` | `effort`。力矩模式下 PD 由 JTC gains 承担，适合接动力学。
 
+3. **`joint_commands`**（默认 `trajectory`）  
+   `trajectory`：JointTrajectoryController；`stream`：ForwardCommandController（需发 `Float64MultiArray`，且须 `control_mode:=position`）。
 
-`init_pose_q` 
-    `0,-0.5,0,1.2,0,0.8,0,0.05`
+4. **`init_pose_q`**（默认 `0,0,0,0,0,0,0,0.05`）  
+   启动时写入 MuJoCo 的 8 个关节角（rad）：joint1..7 + 夹爪。
 
-`init_lock_writes` 
-     `500` | 启动阶段若干 write 内先做初始位姿锁定（0 则只做一次 seed）
+5. **`init_lock_writes`**（默认 `500`）  
+   启动后锁定初始位姿的 write 次数（500 Hz 下约 1 s）；`0` 则只 seed 一次。
 
+6. **`mujoco_joint_actuation`**（默认 `pd_torque`）  
+   仅 `control_mode:=position` 时有效：`pd_torque` 插件内 PD；`direct` 运动学对齐关节角。`effort` 模式下忽略。
 
-`mujoco_joint_actuation` 
-     `pd_torque` 电机 PD；
-     `direct` 每拍运动学对齐关节角（几乎不抖，臂端接触/力不真实） 
+7. **`enable_mujoco_viewer`**（默认 `true`）  
+   `true` | `false`，是否打开 MuJoCo 原生可视化窗口。
 
-`enable_mujoco_viewer` 
-    `false` 
-    `true` 打开 MuJoCo GLFW 窗口 
-`viewer_width` 
-`viewer_height` 
-    `960` / `720`
-`run_test` 
-    `false` 
-    `true`
+8. **`viewer_width` / `viewer_height`**（默认 `960` / `720`）  
+   可视化窗口分辨率（像素）。
 
+9. **`run_test`**（默认 `false`）  
+   `true` 时 launch 后自动发 demo 轨迹或 stream 指令做自检。
 
+10. **`reference_trajectory_test`**（默认 `false`）  
+    `true` 时 launch 后自动发 3 路点参考轨迹（配合 `dynamics_mode:=trajectory`）。
+
+不带任何参数启动时，等价于：
 
 ```bash
-ros2 launch feixi_ros2_control feixi_mujoco_ros2_control.launch.py enable_mujoco_viewer:=true mujoco_joint_actuation:=direct
-joint_commands:=stream 
-run_test:=true
-mujoco_joint_actuation:=direct
-control_mode:=effort
+ros2 launch feixi_mujoco_control feixi_mujoco_ros2_control.launch.py \
+  mjcf_model_path:=scenes/arm_with_gripper.xml \
+  control_mode:=effort \
+  joint_commands:=trajectory \
+  init_pose_q:="0,0,0,0,0,0,0,0.05" \
+  init_lock_writes:=500 \
+  mujoco_joint_actuation:=pd_torque \
+  enable_mujoco_viewer:=true \
+  viewer_width:=960 \
+  viewer_height:=720
 ```
 
+（`control_mode:=effort` 时 `mujoco_joint_actuation` 被忽略。）
 
+示例：打开可视化 + 力矩模式 + 自动 demo 测试
+
+```bash
+ros2 launch feixi_mujoco_control feixi_mujoco_ros2_control.launch.py run_test:=true
+```
 
 ### 另开终端：手动发送指令
 
 ```bash
-ros2 run feixi_ros2_control send_feixi_demo_trajectory
-ros2 run feixi_ros2_control stream_feixi_joint_commands
+source install/setup.bash
+ros2 run feixi_trajectory send_feixi_demo_trajectory
+ros2 run feixi_trajectory send_feixi_reference_trajectory
+ros2 run feixi_trajectory stream_feixi_joint_commands
 ```
 
-`stream_feixi_joint_commands` 需在 launch 里使用 `joint_commands:=stream`，默认 topic：`/feixi_forward_position_controller/commands`。
+`stream_feixi_joint_commands` 需在 launch 里使用 `control_mode:=position` 且 `joint_commands:=stream`，默认 topic：`/feixi_forward_position_controller/commands`。
 
+### Mock 栈（无 MuJoCo）
 
+```bash
+ros2 launch feixi_mujoco_control feixi_mock_ros2_control.launch.py
+ros2 run feixi_trajectory send_feixi_demo_trajectory -- --seven-dof
+```
