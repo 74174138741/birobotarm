@@ -2,10 +2,18 @@ cmake_minimum_required(VERSION 3.16)
 project(feixi_ros2_control)
 
 find_package(ament_cmake REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(hardware_interface REQUIRED)
 find_package(pluginlib REQUIRED)
+find_package(PkgConfig REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(OpenGL REQUIRED)
+
+pkg_check_modules(PINOCCHIO REQUIRED pinocchio)
+execute_process(
+  COMMAND pkg-config --variable=libdir pinocchio
+  OUTPUT_VARIABLE PINOCCHIO_LIBDIR
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 find_package(glfw3 QUIET CONFIG)
 if(TARGET glfw3::glfw)
@@ -34,20 +42,29 @@ endif()
 
 add_library(feixi_mujoco_hardware_plugin SHARED
   src/feixi_mujoco_hardware.cpp
+  src/feixi_pinocchio_dynamics.cpp
   src/mj_view.cpp)
 target_compile_features(feixi_mujoco_hardware_plugin PRIVATE cxx_std_17)
 target_include_directories(feixi_mujoco_hardware_plugin PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include>")
-target_include_directories(feixi_mujoco_hardware_plugin PRIVATE ${MUJOCO_INCLUDE})
+target_include_directories(feixi_mujoco_hardware_plugin PRIVATE
+  ${MUJOCO_INCLUDE}
+  ${PINOCCHIO_INCLUDE_DIRS})
+target_link_directories(feixi_mujoco_hardware_plugin PRIVATE "${PINOCCHIO_LIBDIR}")
+target_compile_options(feixi_mujoco_hardware_plugin PRIVATE ${PINOCCHIO_CFLAGS_OTHER})
 target_link_libraries(feixi_mujoco_hardware_plugin PUBLIC
   hardware_interface::hardware_interface
   pluginlib::pluginlib
   rclcpp::rclcpp
   "${MUJOCO_LIB_PATH}")
-target_link_libraries(feixi_mujoco_hardware_plugin PRIVATE OpenGL::GL "${FEIXI_GLFW_TARGET}")
+target_link_libraries(feixi_mujoco_hardware_plugin PRIVATE
+  OpenGL::GL
+  "${FEIXI_GLFW_TARGET}"
+  ${PINOCCHIO_LIBRARIES})
 
 ament_target_dependencies(feixi_mujoco_hardware_plugin PUBLIC
+  geometry_msgs
   hardware_interface
   pluginlib
   rclcpp)
@@ -68,6 +85,9 @@ install(PROGRAMS scripts/send_feixi_demo_trajectory.py
 install(PROGRAMS scripts/stream_feixi_joint_commands.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME stream_feixi_joint_commands)
+install(PROGRAMS scripts/send_feixi_reference_trajectory.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME send_feixi_reference_trajectory)
 
 set(_GRIND_SCENES "${CMAKE_CURRENT_SOURCE_DIR}/../../scenes")
 if(EXISTS "${_GRIND_SCENES}/arm_with_gripper.xml")
@@ -75,7 +95,7 @@ if(EXISTS "${_GRIND_SCENES}/arm_with_gripper.xml")
 endif()
 
 ament_export_include_directories(include)
-ament_export_dependencies(hardware_interface pluginlib rclcpp)
+ament_export_dependencies(geometry_msgs hardware_interface pluginlib rclcpp)
 ament_export_libraries(feixi_mujoco_hardware_plugin)
 
 ament_package()

@@ -1,6 +1,6 @@
 # generated from ament_cmake_export_dependencies/cmake/ament_cmake_export_dependencies-extras.cmake.in
 
-set(_exported_dependencies "hardware_interface;pluginlib;rclcpp")
+set(_exported_dependencies "geometry_msgs;hardware_interface;pluginlib;rclcpp")
 
 find_package(ament_cmake_libraries QUIET REQUIRED)
 

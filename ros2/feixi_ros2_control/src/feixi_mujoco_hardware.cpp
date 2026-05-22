@@ -1,5 +1,6 @@
 #include "feixi_ros2_control/feixi_mujoco_hardware.hpp"
 
+#include "feixi_ros2_control/feixi_pinocchio_dynamics.hpp"
 #include "feixi_ros2_control/mj_view.hpp"
 
 #include <cctype>
@@ -11,6 +12,8 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
+
+#include <Eigen/Core>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -80,6 +83,36 @@ std::array<double, 8> default_init_pose_q() {
     return {0.0, -0.5, 0.0, 1.2, 0.0, 0.8, 0.0, 0.05};
 }
 
+PinocchioDynamicsMode parse_pinocchio_mode(std::unordered_map<std::string, std::string> const& pmap) {
+    auto const it = pmap.find("dynamics_mode");
+    if (it == pmap.end() || it->second.empty()) {
+        return PinocchioDynamicsMode::None;
+    }
+    std::string v;
+    v.reserve(it->second.size());
+    for (unsigned char uc : it->second) {
+        if (std::isspace(uc) == 0) {
+            v.push_back(static_cast<char>(std::tolower(uc)));
+        }
+    }
+    if (v == "none" || v == "off" || v == "0") {
+        return PinocchioDynamicsMode::None;
+    }
+    if (v == "acceleration" || v == "accel") {
+        return PinocchioDynamicsMode::Acceleration;
+    }
+    if (v == "position" || v == "position_only") {
+        return PinocchioDynamicsMode::PositionOnly;
+    }
+    if (v == "trajectory" || v == "full" || v == "pos_vel_accel") {
+        return PinocchioDynamicsMode::Trajectory;
+    }
+    if (v == "cartesian_wrench" || v == "cartesian" || v == "wrench") {
+        return PinocchioDynamicsMode::CartesianWrench;
+    }
+    return PinocchioDynamicsMode::None;
+}
+
 MujocoJointActuationMode parse_joint_actuation_mode(std::unordered_map<std::string, std::string> const& pmap) {
     auto const it = pmap.find("mujoco_joint_actuation");
     if (it == pmap.end() || it->second.empty()) {
@@ -117,6 +150,9 @@ FeixiMujocoHardware::~FeixiMujocoHardware() {
     if (viewer_thread_.joinable()) {
         viewer_thread_.join();
     }
+    wrench_sub_.reset();
+    wrench_node_.reset();
+    pinocchio_dyn_.reset();
     free_mujoco();
 }
 
@@ -272,6 +308,80 @@ hardware_interface::CallbackReturn FeixiMujocoHardware::on_init(
         return hardware_interface::CallbackReturn::ERROR;
     }
 
+    pinocchio_mode_ = parse_pinocchio_mode(pmap);
+    auto pit = pmap.find("pinocchio_urdf_path");
+    if (pit != pmap.end()) {
+        pinocchio_urdf_path_ = pit->second;
+    }
+    if (!pinocchio_urdf_path_.empty() && std::filesystem::path(pinocchio_urdf_path_).is_relative()) {
+        pinocchio_urdf_path_ = std::filesystem::absolute(pinocchio_urdf_path_).string();
+    }
+
+    auto ee_it = pmap.find("pinocchio_ee_frame");
+    if (ee_it != pmap.end() && !ee_it->second.empty()) {
+        pinocchio_ee_frame_ = ee_it->second;
+    }
+
+    if (pinocchio_mode_ != PinocchioDynamicsMode::None) {
+        if (effort_command_mode_) {
+            RCLCPP_ERROR(get_logger(),
+                         "dynamics_mode is set but command_interface=effort; Pinocchio needs position-style "
+                         "command interfaces.");
+            free_mujoco();
+            return hardware_interface::CallbackReturn::ERROR;
+        }
+        if (joint_actuation_mode_ == MujocoJointActuationMode::DirectJointPosition) {
+            RCLCPP_ERROR(get_logger(),
+                         "dynamics_mode is incompatible with mujoco_joint_actuation=direct.");
+            free_mujoco();
+            return hardware_interface::CallbackReturn::ERROR;
+        }
+        if (pinocchio_urdf_path_.empty()) {
+            RCLCPP_ERROR(get_logger(), "dynamics_mode requires hardware param pinocchio_urdf_path.");
+            free_mujoco();
+            return hardware_interface::CallbackReturn::ERROR;
+        }
+        pinocchio_dyn_ = std::make_unique<FeixiPinocchioDynamics>();
+        std::string perr;
+        if (!pinocchio_dyn_->loadUrdf(pinocchio_urdf_path_, pinocchio_ee_frame_, perr)) {
+            RCLCPP_ERROR(get_logger(), "Pinocchio URDF load failed: %s", perr.c_str());
+            free_mujoco();
+            return hardware_interface::CallbackReturn::ERROR;
+        }
+        if (pinocchio_dyn_->nv() != 8) {
+            RCLCPP_ERROR(get_logger(), "Pinocchio model nv=%d (expected 8 for this stack).",
+                         pinocchio_dyn_->nv());
+            pinocchio_dyn_.reset();
+            free_mujoco();
+            return hardware_interface::CallbackReturn::ERROR;
+        }
+
+        if (pinocchio_mode_ == PinocchioDynamicsMode::CartesianWrench) {
+            std::string topic = "/feixi/cartesian_wrench";
+            auto tit = pmap.find("cartesian_wrench_topic");
+            if (tit != pmap.end() && !tit->second.empty()) {
+                topic = tit->second;
+            }
+            wrench_node_ = std::make_shared<rclcpp::Node>("feixi_mujoco_wrench_rx");
+            wrench_sub_ = wrench_node_->create_subscription<geometry_msgs::msg::Wrench>(
+                topic, rclcpp::QoS(1).best_effort(),
+                [this](geometry_msgs::msg::Wrench::UniquePtr msg) {
+                    std::lock_guard<std::mutex> lk(wrench_mutex_);
+                    wrench_cmd_[0] = msg->torque.x;
+                    wrench_cmd_[1] = msg->torque.y;
+                    wrench_cmd_[2] = msg->torque.z;
+                    wrench_cmd_[3] = msg->force.x;
+                    wrench_cmd_[4] = msg->force.y;
+                    wrench_cmd_[5] = msg->force.z;
+                });
+            RCLCPP_INFO(get_logger(), "Pinocchio Cartesian wrench topic (geometry_msgs/Wrench): %s",
+                        topic.c_str());
+        }
+
+        RCLCPP_INFO(get_logger(), "Pinocchio inverse dynamics enabled (URDF=%s, ee_frame=%s).",
+                    pinocchio_urdf_path_.c_str(), pinocchio_ee_frame_.c_str());
+    }
+
     init_pose_q_ = default_init_pose_q();
     auto pose_it = pmap.find("init_pose_q");
     if (pose_it != pmap.end() && !pose_it->second.empty()) {
@@ -385,42 +495,105 @@ hardware_interface::return_type FeixiMujocoHardware::write(const rclcpp::Time&,
             data_->ctrl[aid] = 0.5 * (lo + hi);
         }
     } else {
-        for (int i = 0; i < 7; ++i) {
-            int const jid = mj_arm_joint_ids_[i];
-            int const aid = mj_arm_act_ids_[i];
-            int const qa = model_->jnt_qposadr[jid];
-            int const va = model_->jnt_dofadr[jid];
-            double q = data_->qpos[qa];
-            double qdot = data_->qvel[va];
+        bool const use_pinocchio =
+            (!effort_command_mode_ && pinocchio_mode_ != PinocchioDynamicsMode::None &&
+             pinocchio_dyn_ != nullptr && pinocchio_dyn_->ok());
 
-            std::string const jkey = "joint" + std::to_string(i + 1);
-            std::string const pos_iface = jkey + "/" + hardware_interface::HW_IF_POSITION;
-            std::string const eff_iface = jkey + "/" + hardware_interface::HW_IF_EFFORT;
+        std::optional<Eigen::VectorXd> tau_pin;
 
-            double lo = model_->actuator_ctrlrange[2 * aid];
-            double hi = model_->actuator_ctrlrange[2 * aid + 1];
-            double tau = 0.0;
-
-            double const q_des = q_cmd[static_cast<std::size_t>(i)];
-
-            if (has_command(eff_iface)) {
-                double const c = get_command<double>(eff_iface);
-                tau = std::isfinite(c) ? c : 0.0;
-            } else if (!effort_command_mode_) {
-                tau = arm_kp_ * (q_des - q) - arm_kd_ * qdot;
-                if (!std::isfinite(tau)) {
-                    tau = 0.0;
-                }
+        if (use_pinocchio) {
+            if (wrench_node_) {
+                rclcpp::spin_some(wrench_node_);
             }
 
-            data_->ctrl[aid] = mju_clip(tau, lo, hi);
+            Eigen::VectorXd q;
+            Eigen::VectorXd v;
+            mujoco_joint_state_to_pinocchio(q, v);
+            Eigen::VectorXd q_des;
+            Eigen::VectorXd v_des;
+            Eigen::VectorXd a_des;
+            read_joint_commands_into_desired(q_cmd, q_des, v_des, a_des);
+
+            Eigen::VectorXd tau(8);
+            if (pinocchio_mode_ == PinocchioDynamicsMode::CartesianWrench) {
+                Eigen::Matrix<double, 6, 1> f;
+                {
+                    std::lock_guard<std::mutex> lk(wrench_mutex_);
+                    for (int k = 0; k < 6; ++k) {
+                        f(static_cast<Eigen::Index>(k)) = wrench_cmd_[static_cast<std::size_t>(k)];
+                    }
+                }
+                pinocchio_dyn_->jacobianTransposeWrenchLocalWorldAligned(q, f, tau);
+            } else {
+                Eigen::VectorXd const e = q_des - q;
+                Eigen::VectorXd const ed = v_des - v;
+                Eigen::VectorXd a_cmd(8);
+                switch (pinocchio_mode_) {
+                    case PinocchioDynamicsMode::Acceleration:
+                        a_cmd = a_des + arm_kp_ * e + arm_kd_ * ed;
+                        break;
+                    case PinocchioDynamicsMode::PositionOnly:
+                        a_cmd = arm_kp_ * e + arm_kd_ * ed;
+                        break;
+                    case PinocchioDynamicsMode::Trajectory:
+                        a_cmd = a_des + arm_kp_ * e + arm_kd_ * ed;
+                        break;
+                    default:
+                        a_cmd.setZero();
+                        break;
+                }
+                a_cmd[7] = gripper_kp_ * (q_des[7] - q[7]) - arm_kd_ * v[7];
+                pinocchio_dyn_->inverseDynamics(q, v, a_cmd, tau);
+            }
+
+            tau_pin = std::move(tau);
+
+            for (int i = 0; i < 7; ++i) {
+                int const aid = mj_arm_act_ids_[i];
+                double lo = model_->actuator_ctrlrange[2 * aid];
+                double hi = model_->actuator_ctrlrange[2 * aid + 1];
+                double t = (*tau_pin)[i];
+                if (!std::isfinite(t)) {
+                    t = 0.0;
+                }
+                data_->ctrl[aid] = mju_clip(t, lo, hi);
+            }
+        } else {
+            for (int i = 0; i < 7; ++i) {
+                int const jid = mj_arm_joint_ids_[i];
+                int const aid = mj_arm_act_ids_[i];
+                int const qa = model_->jnt_qposadr[jid];
+                int const va = model_->jnt_dofadr[jid];
+                double q = data_->qpos[qa];
+                double qdot = data_->qvel[va];
+
+                std::string const jkey = "joint" + std::to_string(i + 1);
+                std::string const pos_iface = jkey + "/" + hardware_interface::HW_IF_POSITION;
+                std::string const eff_iface = jkey + "/" + hardware_interface::HW_IF_EFFORT;
+
+                double lo = model_->actuator_ctrlrange[2 * aid];
+                double hi = model_->actuator_ctrlrange[2 * aid + 1];
+                double tau = 0.0;
+
+                double const q_des = q_cmd[static_cast<std::size_t>(i)];
+
+                if (has_command(eff_iface)) {
+                    double const c = get_command<double>(eff_iface);
+                    tau = std::isfinite(c) ? c : 0.0;
+                } else if (!effort_command_mode_) {
+                    tau = arm_kp_ * (q_des - q) - arm_kd_ * qdot;
+                    if (!std::isfinite(tau)) {
+                        tau = 0.0;
+                    }
+                }
+
+                data_->ctrl[aid] = mju_clip(tau, lo, hi);
+            }
         }
 
         {
             int const gql = model_->jnt_qposadr[mj_gripper_joint_];
             double gq = data_->qpos[gql];
-            std::string const g_pos =
-                std::string("gripper_finger_joint") + "/" + hardware_interface::HW_IF_POSITION;
             std::string const g_eff =
                 std::string("gripper_finger_joint") + "/" + hardware_interface::HW_IF_EFFORT;
 
@@ -428,7 +601,13 @@ hardware_interface::return_type FeixiMujocoHardware::write(const rclcpp::Time&,
             double lo = model_->actuator_ctrlrange[2 * aid];
             double hi = model_->actuator_ctrlrange[2 * aid + 1];
 
-            if (has_command(g_eff)) {
+            if (tau_pin.has_value()) {
+                double t = (*tau_pin)[7];
+                if (!std::isfinite(t)) {
+                    t = 0.0;
+                }
+                data_->ctrl[aid] = mju_clip(t, lo, hi);
+            } else if (has_command(g_eff)) {
                 double const c = get_command<double>(g_eff);
                 double const tau_g = std::isfinite(c) ? c : 0.0;
                 data_->ctrl[aid] = mju_clip(tau_g, lo, hi);
@@ -523,6 +702,84 @@ void FeixiMujocoHardware::viewer_main() {
         }
         glfwSwapBuffers(view.window);
         glfwPollEvents();
+    }
+}
+
+void FeixiMujocoHardware::mujoco_joint_state_to_pinocchio(Eigen::VectorXd& q, Eigen::VectorXd& v) {
+    q.resize(8);
+    v.resize(8);
+    for (int i = 0; i < 7; ++i) {
+        int const jid = mj_arm_joint_ids_[i];
+        int const qa = model_->jnt_qposadr[jid];
+        int const va = model_->jnt_dofadr[jid];
+        q[i] = data_->qpos[qa];
+        v[i] = data_->qvel[va];
+    }
+    int const gql = model_->jnt_qposadr[mj_gripper_joint_];
+    int const gdl = model_->jnt_dofadr[mj_gripper_joint_];
+    q[7] = data_->qpos[gql];
+    v[7] = data_->qvel[gdl];
+}
+
+void FeixiMujocoHardware::read_joint_commands_into_desired(std::array<double, 8> const& q_cmd,
+                                                           Eigen::VectorXd& q_des, Eigen::VectorXd& v_des,
+                                                           Eigen::VectorXd& a_des) {
+    Eigen::VectorXd q_now(8);
+    Eigen::VectorXd v_now(8);
+    mujoco_joint_state_to_pinocchio(q_now, v_now);
+    q_des = q_now;
+    v_des = Eigen::VectorXd::Zero(8);
+    a_des = Eigen::VectorXd::Zero(8);
+
+    for (int i = 0; i < 7; ++i) {
+        std::string const jkey = "joint" + std::to_string(i + 1);
+        std::string const pos_iface = jkey + "/" + hardware_interface::HW_IF_POSITION;
+        if (has_command(pos_iface)) {
+            double const c = get_command<double>(pos_iface);
+            if (std::isfinite(c)) {
+                q_des[i] = c;
+            }
+        }
+        std::string const vel_iface = jkey + "/" + hardware_interface::HW_IF_VELOCITY;
+        if (has_command(vel_iface)) {
+            double const c = get_command<double>(vel_iface);
+            if (std::isfinite(c)) {
+                v_des[i] = c;
+            }
+        }
+        std::string const acc_iface = jkey + "/" + hardware_interface::HW_IF_ACCELERATION;
+        if (has_command(acc_iface)) {
+            double const c = get_command<double>(acc_iface);
+            if (std::isfinite(c)) {
+                a_des[i] = c;
+            }
+        }
+    }
+    std::string const g_pos =
+        std::string("gripper_finger_joint") + "/" + hardware_interface::HW_IF_POSITION;
+    if (has_command(g_pos)) {
+        double const c = get_command<double>(g_pos);
+        if (std::isfinite(c)) {
+            q_des[7] = c;
+        }
+    } else {
+        q_des[7] = q_cmd[7];
+    }
+    std::string const g_vel =
+        std::string("gripper_finger_joint") + "/" + hardware_interface::HW_IF_VELOCITY;
+    if (has_command(g_vel)) {
+        double const c = get_command<double>(g_vel);
+        if (std::isfinite(c)) {
+            v_des[7] = c;
+        }
+    }
+    std::string const g_acc =
+        std::string("gripper_finger_joint") + "/" + hardware_interface::HW_IF_ACCELERATION;
+    if (has_command(g_acc)) {
+        double const c = get_command<double>(g_acc);
+        if (std::isfinite(c)) {
+            a_des[7] = c;
+        }
     }
 }
 

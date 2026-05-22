@@ -1,8 +1,10 @@
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/feixi_mujoco_hardware.xml
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/include/feixi_ros2_control/mj_view.hpp
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/include/feixi_ros2_control/feixi_mujoco_hardware.hpp
+/home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/include/feixi_ros2_control/feixi_pinocchio_dynamics.hpp
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/lib/libfeixi_mujoco_hardware_plugin.so
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/urdf/feixi_mock.urdf.xacro
+/home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/urdf/feixi_pinocchio_model.urdf
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/urdf/feixi.urdf.xacro
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/launch/feixi_mujoco_ros2_control.launch.py
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/launch/feixi_mock_ros2_control.launch.py
@@ -11,9 +13,12 @@
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/feixi_joint_trajectory_controller.yaml
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/ros2_controllers.yaml
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/feixi_joint_trajectory_effort.yaml
+/home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/config/feixi_joint_trajectory_pinocchio.yaml
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/lib/feixi_ros2_control/send_feixi_demo_trajectory
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/lib/feixi_ros2_control/stream_feixi_joint_commands
+/home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/lib/feixi_ros2_control/send_feixi_reference_trajectory
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/feixi_with_gripper.xml
+/home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/compute_arm_inertia_from_collision.py
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link6.stl
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link1.stl
 /home/star/program/real/programming/grinding/ros2_build_ws/install/feixi_ros2_control/share/feixi_ros2_control/scenes/models/feixi/collision/link7.stl

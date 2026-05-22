@@ -2,10 +2,16 @@
 
 #include <array>
 #include <atomic>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <thread>
 #include <unordered_map>
+
+#include <Eigen/Core>
+
+#include "geometry_msgs/msg/wrench.hpp"
+#include "rclcpp/rclcpp.hpp"
 
 #if __has_include(<mujoco/mujoco.h>)
 #include <mujoco/mujoco.h>
@@ -20,12 +26,27 @@
 
 namespace feixi_ros2_control {
 
+class FeixiPinocchioDynamics;
+
 /** How joint POSITION commands are realized in MuJoCo (ros2_control command_interface=position). */
 enum class MujocoJointActuationMode {
     /** PD computes motor torques (physical). */
     PdTorque,
     /** After mj_step, overwrite arm + driver DOF qpos to match commands (kinematic / ideal position). */
     DirectJointPosition,
+};
+
+/** Computed joint torques via Pinocchio inverse dynamics (optional). */
+enum class PinocchioDynamicsMode : std::uint8_t {
+    None = 0,
+    /** tau = M (ddq_des + Kp e + Kd e_dot) + C + g */
+    Acceleration,
+    /** tau = M (Kp e + Kd e_dot) + C + g */
+    PositionOnly,
+    /** tau = M (ddq_des + Kp e + Kd e_dot) + C + g with full trajectory command */
+    Trajectory,
+    /** tau = J^T f (subscribes to geometry_msgs/Wrench) */
+    CartesianWrench,
 };
 
 class FeixiMujocoHardware final : public hardware_interface::SystemInterface {
@@ -44,6 +65,9 @@ class FeixiMujocoHardware final : public hardware_interface::SystemInterface {
     void viewer_main();
     void apply_arm_gripper_pose_to_mujoco(std::array<double, 8> const& q);
     void snap_arm_gripper_to_init_pose();
+    void mujoco_joint_state_to_pinocchio(Eigen::VectorXd& q, Eigen::VectorXd& v);
+    void read_joint_commands_into_desired(std::array<double, 8> const& q_cmd, Eigen::VectorXd& q_des,
+                                          Eigen::VectorXd& v_des, Eigen::VectorXd& a_des);
     static double parse_double_or(std::unordered_map<std::string, std::string> const& pmap,
                                   char const* key, double def_v);
     static bool parse_bool_or(std::unordered_map<std::string, std::string> const& pmap,
@@ -67,6 +91,15 @@ class FeixiMujocoHardware final : public hardware_interface::SystemInterface {
     int init_lock_writes_remaining_{0};
     bool effort_command_mode_{false};
     MujocoJointActuationMode joint_actuation_mode_{MujocoJointActuationMode::PdTorque};
+
+    PinocchioDynamicsMode pinocchio_mode_{PinocchioDynamicsMode::None};
+    std::unique_ptr<FeixiPinocchioDynamics> pinocchio_dyn_;
+    std::string pinocchio_urdf_path_;
+    std::string pinocchio_ee_frame_{"link7"};
+    std::shared_ptr<rclcpp::Node> wrench_node_;
+    rclcpp::Subscription<geometry_msgs::msg::Wrench>::SharedPtr wrench_sub_;
+    std::mutex wrench_mutex_;
+    std::array<double, 6> wrench_cmd_{};
 
     bool model_loaded_{false};
 

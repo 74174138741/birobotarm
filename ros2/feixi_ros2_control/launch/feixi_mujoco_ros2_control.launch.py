@@ -27,12 +27,31 @@ def _bringup_nodes(context, *_args, **_kwargs):
     vw = perform_substitutions(context, [LaunchConfiguration("viewer_width")])
     vh = perform_substitutions(context, [LaunchConfiguration("viewer_height")])
 
+    dynamics_mode_raw = context.launch_configurations.get("dynamics_mode", "none")
+    pinocchio_urdf_arg = perform_substitutions(context, [LaunchConfiguration("pinocchio_urdf_path")])
+    expose_vel_acc = perform_substitutions(context, [LaunchConfiguration("expose_joint_vel_acc_commands")])
+
+    pinocchio_urdf_default = os.path.join(pkg_share, "urdf", "feixi_pinocchio_model.urdf")
+    pinocchio_urdf = pinocchio_urdf_arg.strip() if pinocchio_urdf_arg else ""
+    if not pinocchio_urdf:
+        pinocchio_urdf = pinocchio_urdf_default
+
     cmd_iface = "effort" if mode == "effort" else "position"
-    jtc_name = (
-        "feixi_joint_trajectory_effort.yaml"
-        if mode == "effort"
-        else "feixi_joint_trajectory_controller.yaml"
-    )
+
+    dynamics_mode_lc = dynamics_mode_raw.lower().strip()
+    use_pinocchio_cmds = dynamics_mode_lc in ("trajectory", "acceleration")
+    if use_pinocchio_cmds and expose_vel_acc.lower() not in ("1", "true", "yes"):
+        log.warning(
+            "dynamics_mode=%s requires velocity/acceleration command interfaces; using expose_joint_vel_acc_commands:=true.",
+            dynamics_mode_raw,
+        )
+        expose_vel_acc = "true"
+    if mode == "effort":
+        jtc_name = "feixi_joint_trajectory_effort.yaml"
+    elif use_pinocchio_cmds:
+        jtc_name = "feixi_joint_trajectory_pinocchio.yaml"
+    else:
+        jtc_name = "feixi_joint_trajectory_controller.yaml"
 
     use_stream = joint_cmds == "stream"
     if use_stream and mode == "effort":
@@ -64,6 +83,12 @@ def _bringup_nodes(context, *_args, **_kwargs):
                 init_lock_writes,
                 " mujoco_joint_actuation:=",
                 mujoco_joint_actuation,
+                " dynamics_mode:=",
+                dynamics_mode_raw,
+                " pinocchio_urdf_path:=",
+                pinocchio_urdf,
+                " expose_joint_vel_acc_commands:=",
+                expose_vel_acc,
             ]
         ),
         value_type=str,
@@ -123,6 +148,15 @@ def _bringup_nodes(context, *_args, **_kwargs):
     out = [rsp, ros2_cm, spawners]
 
     run_test = context.launch_configurations.get("run_test", "false").lower() in ("1", "true", "yes")
+    run_ref = context.launch_configurations.get("reference_trajectory_test", "false").lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if run_test and run_ref:
+        log.warning("run_test and reference_trajectory_test both true; running reference test only.")
+        run_test = False
+
     if run_test:
         # After spawners (t=6s), give controllers a moment to activate.
         if use_stream:
@@ -140,6 +174,20 @@ def _bringup_nodes(context, *_args, **_kwargs):
                 output="screen",
             )
         out.append(TimerAction(period=8.0, actions=[tester]))
+
+    if run_ref:
+        if joint_cmds != "trajectory":
+            log.warning("reference_trajectory_test ignored (joint_commands is not trajectory).")
+        elif use_stream:
+            log.warning("reference_trajectory_test ignored in stream mode.")
+        else:
+            ref_tester = Node(
+                package="feixi_ros2_control",
+                executable="send_feixi_reference_trajectory",
+                name="feixi_reference_traj_test",
+                output="screen",
+            )
+            out.append(TimerAction(period=10.0, actions=[ref_tester]))
 
     return out
 
@@ -228,6 +276,44 @@ def generate_launch_description():
         choices=["true", "false"],
     )
 
+    dynamics_decl = DeclareLaunchArgument(
+        "dynamics_mode",
+        default_value="none",
+        description=(
+            "Pinocchio torque law in hardware: none | acceleration | position | trajectory | cartesian_wrench. "
+            "Use trajectory + reference_trajectory_test for multi-point spline test."
+        ),
+    )
+
+    pinocchio_urdf_decl = DeclareLaunchArgument(
+        "pinocchio_urdf_path",
+        default_value="",
+        description=(
+            "Absolute URDF for Pinocchio (no ros2_control tags). "
+            "If empty, uses share/feixi_ros2_control/urdf/feixi_pinocchio_model.urdf."
+        ),
+    )
+
+    expose_vel_acc_decl = DeclareLaunchArgument(
+        "expose_joint_vel_acc_commands",
+        default_value="false",
+        description=(
+            "If true, add velocity+acceleration command interfaces on arm joints in URDF (needed for "
+            "dynamics_mode=trajectory / acceleration with JointTrajectoryController)."
+        ),
+        choices=["true", "false"],
+    )
+
+    ref_traj_decl = DeclareLaunchArgument(
+        "reference_trajectory_test",
+        default_value="false",
+        description=(
+            "If true, ~10 s after launch send send_feixi_reference_trajectory (3 waypoints, 8 s motion). "
+            "If both run_test and this are true, the demo trajectory test is skipped."
+        ),
+        choices=["true", "false"],
+    )
+
     return LaunchDescription(
         [
             mjcf_decl,
@@ -240,6 +326,10 @@ def generate_launch_description():
             vw_decl,
             vh_decl,
             run_test_decl,
+            dynamics_decl,
+            pinocchio_urdf_decl,
+            expose_vel_acc_decl,
+            ref_traj_decl,
             OpaqueFunction(function=_bringup_nodes),
         ]
     )

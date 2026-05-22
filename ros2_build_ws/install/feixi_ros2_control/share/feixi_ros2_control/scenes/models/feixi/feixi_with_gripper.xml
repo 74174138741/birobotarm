@@ -74,40 +74,48 @@
 
   <worldbody>
     <body name="base_link">
+      <inertial pos="-0.00021106538 -0.00012110009 0.093234927" mass="7.4102692" fullinertia="0.041009804 0.040916598 0.031217284 5.2228925e-05 1.73482e-05 -1.9102494e-05"/>
       <geom class="visual" mesh="link0_v"/>
       <geom class="collision" mesh="link0_c"/>
 
       <body name="link1" pos="0 0 0.21" euler="0 0 -3.141592653589793">
+        <inertial pos="-0.00029095491 -0.0035858819 0.15418313" mass="9.0144205" fullinertia="0.082550202 0.081963619 0.030529475 7.4319029e-05 7.0665272e-06 0.0018310621"/>
         <joint name="joint1" axis="0 0 1" range="-2.8798 2.8798"/>
         <geom class="visual" mesh="link1_v"/>
         <geom class="collision" mesh="link1_c"/>
 
         <body name="link2" pos="0 0.0675 0.24">
+          <inertial pos="-6.4713234e-05 0.063525121 0.067577715" mass="6.7570036" fullinertia="0.051911627 0.053134761 0.018626617 5.7490856e-06 -9.4102031e-06 0.00041544898"/>
           <joint name="joint2" axis="0 1 0" range="-2.7576 2.7576"/>
           <geom class="visual" mesh="link2_v"/>
           <geom class="collision" mesh="link2_c"/>
 
           <body name="link3" pos="0 0.0625 0.2275">
+            <inertial pos="0.0003960789 -0.00041808556 0.13941829" mass="5.0247388" fullinertia="0.035483875 0.035211857 0.010620295 5.8174996e-06 3.7116793e-05 1.557697e-05"/>
             <joint name="joint3" axis="0 0 1" range="-2.8798 2.8798"/>
             <geom class="visual" mesh="link3_v"/>
             <geom class="collision" mesh="link3_c"/>
 
             <body name="link4" pos="0 -0.0625 0.2225" euler="0 0 -3.141592653589793">
+              <inertial pos="0.00011494995 0.056755076 0.063683236" mass="3.9685494" fullinertia="0.023090356 0.022898562 0.0073930755 -8.5200568e-06 -2.178671e-05 -5.2887506e-05"/>
               <joint name="joint4" axis="0 1 0" range="-2.7925 2.7925"/>
               <geom class="visual" mesh="link4_v"/>
               <geom class="collision" mesh="link4_c"/>
 
               <body name="link5" pos="0 0.0575 0.205" euler="0 0 -3.141592653589793">
+                <inertial pos="-0.00014372049 -0.0093849119 0.11679232" mass="2.7536846" fullinertia="0.013718484 0.013540662 0.0038340901 -1.4297428e-05 6.9588203e-06 0.00097555493"/>
                 <joint name="joint5" axis="0 0 1" range="-3.0543 3.0543"/>
                 <geom class="visual" mesh="link5_v"/>
                 <geom class="collision" mesh="link5_c"/>
 
                 <body name="link6" pos="0 0.03 0.19">
+                  <inertial pos="0.024266168 0.059349347 0.059586978" mass="2.9139461" fullinertia="0.010471625 0.011731545 0.0062550184 -0.00059897658 -0.0022613776 -0.0015611765"/>
                   <joint name="joint6" axis="0 1 0" range="-1.4835 4.6251"/>
                   <geom class="visual" mesh="link6_v"/>
                   <geom class="collision" mesh="link6_c"/>
 
                   <body name="link7" pos="-0.015 0.073 0.11" euler="0 -1.5707963478683205 0">
+                    <inertial pos="-3.0957835e-05 4.7993308e-06 0.038274347" mass="0.80570764" fullinertia="0.00087189474 0.00087088066 0.00093037058 -1.9998805e-06 1.1000774e-06 6.172395e-07"/>
                     <joint name="joint7" axis="0 0 1" range="-3.0543 3.0543"/>
                     <geom class="visual" mesh="link7_c"/>
                     <geom class="collision" mesh="link7_c"/>

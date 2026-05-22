@@ -11,8 +11,15 @@
   <xacro:arg name="init_lock_writes" default="500"/>
   <!-- MuJoCo realtime: pd_torque = motor torques from PD on q_des; direct = kinematic joint angles after mj_step (ideal tracking, not physical contact on arm). -->
   <xacro:arg name="mujoco_joint_actuation" default="pd_torque"/>
+  <!-- For Pinocchio acceleration / trajectory modes: add velocity + acceleration command interfaces (JointTrajectoryController). -->
+  <xacro:arg name="expose_joint_vel_acc_commands" default="false"/>
+  <xacro:arg name="pinocchio_urdf_path" default=""/>
+  <!-- dynamics_mode: none | acceleration | position | trajectory | cartesian_wrench -->
+  <xacro:arg name="dynamics_mode" default="none"/>
+  <xacro:arg name="pinocchio_ee_frame" default="link7"/>
+  <xacro:arg name="cartesian_wrench_topic" default="/feixi/cartesian_wrench"/>
 
-  <xacro:macro name="feixi_ros2_joint_block" params="joint_name cmd_iface">
+  <xacro:macro name="feixi_ros2_joint_block" params="joint_name cmd_iface expose_vel_acc:=false">
     <joint name="${joint_name}">
       <xacro:if value="${cmd_iface == 'position'}">
         <command_interface name="position"/>
@@ -20,6 +27,10 @@
       <xacro:if value="${cmd_iface == 'effort'}">
         <command_interface name="effort"/>
       </xacro:if>
+      <xacro:unless value="${expose_vel_acc == 'false' or expose_vel_acc == '0'}">
+        <command_interface name="velocity"/>
+        <command_interface name="acceleration"/>
+      </xacro:unless>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
@@ -122,14 +133,18 @@
       <param name="enable_mujoco_viewer">$(arg enable_mujoco_viewer)</param>
       <param name="viewer_width">$(arg viewer_width)</param>
       <param name="viewer_height">$(arg viewer_height)</param>
+      <param name="pinocchio_urdf_path">$(arg pinocchio_urdf_path)</param>
+      <param name="dynamics_mode">$(arg dynamics_mode)</param>
+      <param name="pinocchio_ee_frame">$(arg pinocchio_ee_frame)</param>
+      <param name="cartesian_wrench_topic">$(arg cartesian_wrench_topic)</param>
     </hardware>
-    <xacro:feixi_ros2_joint_block joint_name="joint1" cmd_iface="$(arg command_interface)"/>
-    <xacro:feixi_ros2_joint_block joint_name="joint2" cmd_iface="$(arg command_interface)"/>
-    <xacro:feixi_ros2_joint_block joint_name="joint3" cmd_iface="$(arg command_interface)"/>
-    <xacro:feixi_ros2_joint_block joint_name="joint4" cmd_iface="$(arg command_interface)"/>
-    <xacro:feixi_ros2_joint_block joint_name="joint5" cmd_iface="$(arg command_interface)"/>
-    <xacro:feixi_ros2_joint_block joint_name="joint6" cmd_iface="$(arg command_interface)"/>
-    <xacro:feixi_ros2_joint_block joint_name="joint7" cmd_iface="$(arg command_interface)"/>
-    <xacro:feixi_ros2_joint_block joint_name="gripper_finger_joint" cmd_iface="$(arg command_interface)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint1" cmd_iface="$(arg command_interface)" expose_vel_acc="$(arg expose_joint_vel_acc_commands)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint2" cmd_iface="$(arg command_interface)" expose_vel_acc="$(arg expose_joint_vel_acc_commands)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint3" cmd_iface="$(arg command_interface)" expose_vel_acc="$(arg expose_joint_vel_acc_commands)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint4" cmd_iface="$(arg command_interface)" expose_vel_acc="$(arg expose_joint_vel_acc_commands)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint5" cmd_iface="$(arg command_interface)" expose_vel_acc="$(arg expose_joint_vel_acc_commands)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint6" cmd_iface="$(arg command_interface)" expose_vel_acc="$(arg expose_joint_vel_acc_commands)"/>
+    <xacro:feixi_ros2_joint_block joint_name="joint7" cmd_iface="$(arg command_interface)" expose_vel_acc="$(arg expose_joint_vel_acc_commands)"/>
+    <xacro:feixi_ros2_joint_block joint_name="gripper_finger_joint" cmd_iface="$(arg command_interface)" expose_vel_acc="false"/>
   </ros2_control>
 </robot>
